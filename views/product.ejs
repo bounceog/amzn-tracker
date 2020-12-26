@@ -1,0 +1,69 @@
+<div class="container-fluid mt-5">
+    <div class="row">
+      <nav class="col-md-2 d-none d-md-block bg-light sidebar mt-5">
+        <div class="sidebar-sticky">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                Graph
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#table">
+                Table
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+          <h1 class="h2"><%= product.name %></h1>
+          <div class="btn-toolbar mb-2 mb-md-0">
+              <div class="btn-group mr-2">
+                <a class="btn btn-sm btn-outline-secondary"  href="<%- product.url -%>">Product Page</a>
+                <a id="csv_file" class="btn btn-sm btn-outline-secondary" href="/data/<%- product._id -%>">Download CSV</a>
+              </div>
+            </div>
+      </div>
+
+      <canvas id="myChart" width="400" height="200"></canvas>
+      
+      <h2 class="mt-5">Price changes</h2>
+      <table class="table" id="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Price</th>
+            <th scope="col">24H Change</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (var i = 0; i < product.prices.length; i++) { %>
+            <tr>
+              <td>
+                <!-- <% var date = new Date(product.prices[i].date).toLocaleDateString().split('/'); %> -->
+                <%= new Date(product.prices[i].date).toLocaleDateString() %>
+              </td>
+              <td><%= product.prices[i].value %>€</td>
+              <td>
+                <% if (i > 0 && parseFloat(product.prices[i]) != 0) { %>
+                  <% var perc = (((parseFloat(product.prices[i].value) / parseFloat(product.prices[i-1].value)) - 1) * 100).toFixed(2); %>
+                  <span class="<%- perc === '0.00' ? '' : ((parseFloat(product.prices[i-1].value) > parseFloat(product.prices[i].value)) ? 'text-success' : 'text-danger') -%>">
+                    <%= perc %>%
+                  </span>
+                <% } else { %>
+                  <span>-</span>
+                <% } %>
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+
+    </main>
+  </div>
+</div>
+
+<script src="/static/js/product.chart.js"></script>
